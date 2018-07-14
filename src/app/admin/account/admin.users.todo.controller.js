@@ -1,12 +1,12 @@
 (function () {
   angular
     .module('pms')
-    .controller('AdminUsersModifyController', AdminUsersModifyController);
+    .controller('AdminUsersTodoController', AdminUsersTodoController);
 
-  // admin/users 컨트롤러
-  function AdminUsersModifyController(
+  // admin/user/todo/uid 컨트롤러
+  function AdminUsersTodoController(
     $log, $http, $window, $sessionStorage, $location,
-    $stateParams, $state
+    $stateParams
   ) {
     const vm = this;
 
@@ -31,18 +31,18 @@
     function errorCallback(error) {
       vm.log(error, 'can not get data.');
     }
-    vm.initModify = () => {
-      if (vm.stateParams.modify_id != null) {
-        // 유저 데이터 불러오기
-        $http.get(`/rest/admin/user/${vm.stateParams.modify_id}`).then((response) => {
-          if (response.data.error) {
-            alert('This user does not exist.');
-          }
-          vm.user = response.data.user;
-          vm.proj = response.data.project;
-        });
-      }
-    };
+    vm.uid = vm.stateParams.todo_id;
+    vm.pid = vm.stateParams.todo_pid;
+    vm.proj = vm.stateParams.todo_proj;
+    if (vm.uid != null) {
+      // 유저 데이터 불러오기
+      $http.get(`/rest/admin/user/${vm.uid}/${vm.pid}`).then((response) => {
+        if (response.data.error) {
+          alert('This article does not exist.');
+        }
+        vm.todos = response.data;
+      });
+    }
     // 유저 수정
     vm.modify = () => {
       $http.put(`/rest/admin/user/${vm.stateParams.modify_id}`, {

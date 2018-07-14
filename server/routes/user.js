@@ -5,19 +5,17 @@ const router = express.Router();
 
 // const viewPath = config.path;
 // const path = require('path');
-const models = require('../models');
 const wrap = require('express-async-wrap');
+const models = require('../models');
 
 // add user
 router.post('/', wrap(async (req, res) => {
-  try {
-    const create = await models.user.create(req.body);
-    if (create) {
-      res.send({
-        result: true
-      });
-    }
-  } catch (e) {
+  const create = await models.user.create(req.body);
+  if (create) {
+    res.send({
+      result: true
+    });
+  } else {
     res.send({
       result: false
     });
@@ -26,7 +24,7 @@ router.post('/', wrap(async (req, res) => {
 
 // 유저 삭제
 router.delete('/', wrap(async (req, res) => {
-  try {
+  if (req.session.user.auth === 1) {
     const dest = await models.user.destroy({
       where: { uid: req.body.uid }
     });
@@ -34,12 +32,17 @@ router.delete('/', wrap(async (req, res) => {
       res.send({
         result: true
       });
-    } else {
+    }
+  } else if (req.session.user.uid === req.body.uid) {
+    const dest = await models.user.destroy({
+      where: { uid: req.body.uid }
+    });
+    if (dest) {
       res.send({
-        result: false
+        result: true
       });
     }
-  } catch (e) {
+  } else {
     res.send({
       result: false
     });
@@ -48,20 +51,18 @@ router.delete('/', wrap(async (req, res) => {
 
 
 // 유저  정보 수정
-router.put('/', wrap(async (req, res) => {
-  try {
-    const update = await models.user.update(req.body, {
-      where: {
-        uid: req.session.user.uid
-      }
-    });
-
-    if (update) {
-      res.send({
-        result: true
-      });
+router.put('/:uid', wrap(async (req, res) => {
+  const update = await models.user.update(req.body, {
+    where: {
+      uid: req.session.user.uid
     }
-  } catch (e) {
+  });
+
+  if (update) {
+    res.send({
+      result: true
+    });
+  } else {
     res.send({
       result: false
     });
@@ -71,22 +72,14 @@ router.put('/', wrap(async (req, res) => {
 
 // 유저 정보 읽기
 router.get('/:uid', wrap(async (req, res) => {
-  try {
-    const inform = await models.user.findOne({
-      where: {
-        uid: req.params.uid
-      }
-    });
-    await delete inform.dataValues.pw;
-
-    if (inform) {
-      res.send(inform);
-    } else {
-      res.send({
-        result: false
-      });
+  const inform = await models.user.findOne({
+    where: {
+      uid: req.params.uid
     }
-  } catch (e) {
+  });
+  if (inform) {
+    res.send(inform);
+  } else {
     res.send({
       result: false
     });
@@ -94,4 +87,3 @@ router.get('/:uid', wrap(async (req, res) => {
 }));
 
 module.exports = router;
-

@@ -39,7 +39,9 @@ input, button {
 .cont {
   position: relative;
   height: 100%;
-  background-image: url("/assets/images/background.jpg");
+  background-image: : #ADA996;  /* fallback for old browsers */
+  background-image: -webkit-linear-gradient(to top, #EAEAEA, #DBDBDB, #F2F2F2, #ADA996);  /* Chrome 10-25, Safari 5.1-6 */
+  background-image: linear-gradient(to top, #EAEAEA, #DBDBDB, #F2F2F2, #ADA996); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   background-size: cover;
   background-color:none;
   overflow: auto;
@@ -526,7 +528,9 @@ md-content#innerContent{
 ::-webkit-input-placeholder {
     color: #FFFFFF;
 }
-
+.minput::-webkit-input-placeholder {
+    color: black;
+}
 @-webkit-keyframes animRipple {
   to {
     -webkit-transform: scale(3.5);
@@ -591,4 +595,47 @@ md-content#innerContent{
 
 .table_title{
   font-size: 16px;
+}
+
+.text_input{
+  font_size: 12px;
+  background-color: #ecf0f1;
+  text-align: center;
+  width: 120px;
+}
+
+/* Removes the clear button from date inputs */
+input[type="date"]::-webkit-clear-button {
+    display: none;
+}
+
+/* Removes the spin button */
+input[type="date"]::-webkit-inner-spin-button { 
+    display: none;
+}
+
+/* Always display the drop down caret */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    color: #2c3e50;
+}
+
+/* A few custom styles for date inputs */
+input[type="date"] {
+    appearance: none;
+    -webkit-appearance: none;
+    color: #95a5a6;
+    font-family: "Helvetica", arial, sans-serif;
+    font-size: 12px;
+    border:1px solid #ecf0f1;
+    background:#ecf0f1;
+    padding:0px;
+    display: inline-block !important;
+    visibility: visible !important;
+}
+
+input[type="date"], focus {
+    color: #95a5a6;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
 }
